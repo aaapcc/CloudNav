@@ -53,24 +53,27 @@ const LinkModal: React.FC<LinkModalProps> = ({ isOpen, onClose, onSave, categori
   }, [isOpen, initialData, categories]);
 
   // Logic to fetch icon
-  const fetchIconFromUrl = (targetUrl: string) => {
-      if (!targetUrl) return;
-      try {
-        let normalizedUrl = targetUrl;
-        if (!targetUrl.startsWith('http')) {
-            normalizedUrl = 'https://' + targetUrl;
+    const fetchIconFromUrl = (targetUrl: string) => {
+        if (!targetUrl) return;
+        try {
+            let normalizedUrl = targetUrl;
+            if (!targetUrl.startsWith('http')) {
+                normalizedUrl = 'https://' + targetUrl;
+            }
+            
+            // 提取域名
+            const urlObj = new URL(normalizedUrl);
+            const domain = urlObj.hostname;
+            
+            // 使用 faviconextractor.com 获取图标
+            const newIcon = `https://www.faviconextractor.com/favicon/${domain}?larger=true`;
+            
+            setIconUrl(newIcon);
+        } catch (e) {
+            // invalid url
+            console.error('Failed to extract domain:', e);
         }
-        
-        // Use Google's specialized favicon service which is more robust
-        // t2.gstatic.com is used by Chrome internal pages
-        // fallback_opts=TYPE,SIZE,URL ensures it tries multiple ways to get an icon
-        const newIcon = `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${encodeURIComponent(normalizedUrl)}&size=128`;
-        
-        setIconUrl(newIcon);
-      } catch (e) {
-          // invalid url
-      }
-  };
+    };
 
   const handleUrlBlur = () => {
       if (!url) return;
