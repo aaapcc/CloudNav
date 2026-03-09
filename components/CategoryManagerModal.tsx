@@ -247,38 +247,44 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                   {editingId !== cat.id && mergingCatId !== cat.id && (
                       <div className="flex items-center gap-1 self-start mt-2">
                         {/* ===== 是否可见下拉框（直接显示在列表里） ===== */}
-                      <div className="flex items-center gap-2 mr-3 border-r border-slate-200 dark:border-slate-700 pr-3">
-                        <select
-                          value={String((cat as any).isVisible) === "false" ? "hidden" : "public"}
-                          onChange={(e) => {
-                            const newValue = e.target.value;
-                            
-                            const newCategories = categories.map(c => {
-                              if (c.id === cat.id) {
-                                // 直接设置布尔值
-                                return { 
-                                  ...c, 
-                                  isVisible: newValue === "public" 
-                                };
-                              }
-                              return c;
-                            });
-                            
-                            onUpdateCategories(newCategories);
-                          }}
-                          className="text-xs p-1.5 pr-8 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
-                          style={{
-                            backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                            backgroundPosition: 'right 0.5rem center',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundSize: '1.5em 1.5em',
-                            paddingRight: '2rem'
-                          }}
-                        >
-                          <option value="public">👥 可见</option>
-                          <option value="hidden">🚫 隐藏</option>
-                        </select>
-                      </div>
+                        <div className="flex items-center gap-1 mr-3 border-r border-slate-200 dark:border-slate-700 pr-3">
+                          <button
+                            onClick={() => {
+                              const newCategories = categories.map(c => {
+                                if (c.id === cat.id) {
+                                  return { ...c, isVisible: true };
+                                }
+                                return c;
+                              });
+                              onUpdateCategories(newCategories);
+                            }}
+                            className={`px-2 py-1 text-xs rounded-l-lg border ${
+                              (cat as any).isVisible !== false
+                                ? 'bg-blue-600 text-white border-blue-600'
+                                : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-600'
+                            }`}
+                          >
+                            可见
+                          </button>
+                          <button
+                            onClick={() => {
+                              const newCategories = categories.map(c => {
+                                if (c.id === cat.id) {
+                                  return { ...c, isVisible: false };
+                                }
+                                return c;
+                              });
+                              onUpdateCategories(newCategories);
+                            }}
+                            className={`px-2 py-1 text-xs rounded-r-lg border ${
+                              (cat as any).isVisible === false
+                                ? 'bg-red-600 text-white border-red-600'
+                                : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-600'
+                            }`}
+                          >
+                            隐藏
+                          </button>
+                        </div>
                         {/* ===== 下拉框结束 ===== */}
                         
                         <button onClick={() => startEdit(cat)} className="p-1.5 text-slate-400 hover:text-blue-500 hover:bg-slate-200 dark:hover:bg-slate-600 rounded" title="编辑">
