@@ -250,34 +250,29 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                           }
                           onChange={(e) => {
                             const value = e.target.value;
-                            let isVisible = true;
-                            let isAdminOnly = false;
                             
-                            if (value === "hidden") {
-                              isVisible = false;
-                              isAdminOnly = false;
-                            } else if (value === "admin") {
-                              isVisible = true;
-                              isAdminOnly = true;
-                            } else { // public
-                              isVisible = true;
-                              isAdminOnly = false;
+                            // 直接创建一个新的数组，不要用 map
+                            const newCategories = JSON.parse(JSON.stringify(categories));
+                            const targetIndex = newCategories.findIndex((c: Category) => c.id === cat.id);
+                            
+                            if (targetIndex !== -1) {
+                              if (value === "hidden") {
+                                newCategories[targetIndex].isVisible = false;
+                                newCategories[targetIndex].isAdminOnly = false;
+                              } else if (value === "admin") {
+                                newCategories[targetIndex].isVisible = true;
+                                newCategories[targetIndex].isAdminOnly = true;
+                              } else {
+                                newCategories[targetIndex].isVisible = true;
+                                newCategories[targetIndex].isAdminOnly = false;
+                              }
+                              
+                              // 调用更新函数
+                              onUpdateCategories(newCategories);
+                              
+                              // 强制当前下拉框显示新值
+                              e.target.value = value;
                             }
-                            
-                            // 创建新数组，使用类型断言
-                            const updatedCategories = categories.map(c => 
-                              c.id === cat.id ? { 
-                                ...c, 
-                                isVisible, 
-                                isAdminOnly 
-                              } : c
-                            ) as Category[];  // 👈 关键：类型断言
-                            
-                            // 调用更新函数
-                            onUpdateCategories(updatedCategories);
-                            
-                            // 强制刷新下拉框
-                            e.target.value = value;
                           }}
                           className="text-xs p-1.5 pr-8 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
                           style={{
