@@ -245,34 +245,46 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                       <div className="flex items-center gap-2 mr-3 border-r border-slate-200 dark:border-slate-700 pr-3">
                         <select
                           value={
-                            (cat as CategoryWithVisibility).isVisible === false ? "hidden" :
-                            (cat as CategoryWithVisibility).isAdminOnly === true ? "admin" : "public"
+                            (cat as any).isVisible === false ? "hidden" :
+                            (cat as any).isAdminOnly === true ? "admin" : "public"
                           }
                           onChange={(e) => {
-                            const value = e.target.value;
+                            const newValue = e.target.value;
                             
-                            // 直接创建一个新的数组，不要用 map
-                            const newCategories = JSON.parse(JSON.stringify(categories));
-                            const targetIndex = newCategories.findIndex((c: Category) => c.id === cat.id);
-                            
-                            if (targetIndex !== -1) {
-                              if (value === "hidden") {
-                                newCategories[targetIndex].isVisible = false;
-                                newCategories[targetIndex].isAdminOnly = false;
-                              } else if (value === "admin") {
-                                newCategories[targetIndex].isVisible = true;
-                                newCategories[targetIndex].isAdminOnly = true;
-                              } else {
-                                newCategories[targetIndex].isVisible = true;
-                                newCategories[targetIndex].isAdminOnly = false;
+                            // 直接创建新数组
+                            const newCategories = categories.map(c => {
+                              if (c.id === cat.id) {
+                                // 根据选择设置值
+                                if (newValue === "hidden") {
+                                  return { 
+                                    ...c, 
+                                    isVisible: false, 
+                                    isAdminOnly: false 
+                                  };
+                                } else if (newValue === "admin") {
+                                  return { 
+                                    ...c, 
+                                    isVisible: true, 
+                                    isAdminOnly: true 
+                                  };
+                                } else {
+                                  return { 
+                                    ...c, 
+                                    isVisible: true, 
+                                    isAdminOnly: false 
+                                  };
+                                }
                               }
-                              
-                              // 调用更新函数
-                              onUpdateCategories(newCategories);
-                              
-                              // 强制当前下拉框显示新值
-                              e.target.value = value;
-                            }
+                              return c;
+                            });
+                            
+                            // 调用更新函数
+                            onUpdateCategories(newCategories);
+                            
+                            // 强制下拉框显示新值
+                            setTimeout(() => {
+                              e.target.value = newValue;
+                            }, 0);
                           }}
                           className="text-xs p-1.5 pr-8 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
                           style={{
