@@ -249,18 +249,16 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                         {/* ===== 是否可见下拉框（直接显示在列表里） ===== */}
                       <div className="flex items-center gap-2 mr-3 border-r border-slate-200 dark:border-slate-700 pr-3">
                         <select
-                          value={
-                            (cat as any).isVisible === false ? "hidden" : "public"
-                          }
+                          value={String((cat as any).isVisible) === "false" ? "hidden" : "public"}
                           onChange={(e) => {
                             const newValue = e.target.value;
                             
                             const newCategories = categories.map(c => {
                               if (c.id === cat.id) {
+                                // 直接设置布尔值
                                 return { 
                                   ...c, 
-                                  isVisible: newValue === "public" ? true : false,
-                                  // 暂时不用 isAdminOnly，先让基础功能工作
+                                  isVisible: newValue === "public" 
                                 };
                               }
                               return c;
@@ -277,8 +275,8 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                             paddingRight: '2rem'
                           }}
                         >
-                          <option value="public" className="dark:bg-slate-800">👥 可见</option>
-                          <option value="hidden" className="dark:bg-slate-800">🚫 隐藏</option>
+                          <option value="public">👥 可见</option>
+                          <option value="hidden">🚫 隐藏</option>
                         </select>
                       </div>
                         {/* ===== 下拉框结束 ===== */}
