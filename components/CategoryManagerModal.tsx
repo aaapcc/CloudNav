@@ -62,6 +62,11 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
   const [mergingCatId, setMergingCatId] = useState<string | null>(null);
   const [targetMergeId, setTargetMergeId] = useState<string>('');
 
+  // 👇 加在这里
+  useEffect(() => {
+    console.log('Modal categories 更新了:', categories);
+  }, [categories]);
+
   if (!isOpen) return null;
 
   const handleMove = (index: number, direction: 'up' | 'down') => {

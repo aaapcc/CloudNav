@@ -299,6 +299,11 @@ function App() {
     return () => mainEl?.removeEventListener('scroll', handleScroll);
   }, [categories]);
 
+  // 👇 把这个加在这里，和其他 useEffect 平级
+  useEffect(() => {
+    console.log('App categories 更新了:', categories);
+  }, [categories]);
+
   const toggleTheme = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
