@@ -13,8 +13,10 @@ export interface LinkItem {
 export interface Category {
   id: string;
   name: string;
-  icon: string; // Lucide icon name or emoji
-  password?: string; // Optional password for category protection
+  icon?: string;
+  password?: string;
+  isVisible?: boolean;      // false = 全员隐藏
+  isAdminOnly?: boolean;    // true = 仅管理员可见
 }
 
 export interface SiteSettings {

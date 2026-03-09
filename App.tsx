@@ -706,7 +706,12 @@ function App() {
 
             {/* 先过滤出可见的分类 */}
             {categories
-              .filter(cat => (cat as any).isVisible !== false) // 只显示可见的分类
+              .filter(cat => {
+                // 如果是管理员（已登录），显示所有分类
+                if (authToken) return true;
+                // 如果是普通用户，只显示全员可见的分类
+                return cat.isVisible !== false && !cat.isAdminOnly;
+              })
               .map(cat => {
                 const isLocked = cat.password && !unlockedCategoryIds.has(cat.id);
                 const isEmoji = cat.icon && cat.icon.length <= 4 && !/^[a-zA-Z]+$/.test(cat.icon);
@@ -766,16 +771,6 @@ function App() {
                  {syncStatus === 'error' && <AlertCircle className="w-3 h-3 text-red-500" />}
                  {authToken ? <span className="text-green-600">已同步</span> : <span className="text-amber-500">离线</span>}
                </div>
-               <a 
-                 href={GITHUB_REPO_URL} 
-                 target="_blank" 
-                 rel="noopener noreferrer"
-                 className="flex items-center gap-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
-                 title="Fork this project on GitHub"
-               >
-                 <GitFork size={14} />
-                 <span>Fork 项目</span>
-               </a>
             </div>
         </div>
       </aside>
@@ -912,7 +907,12 @@ function App() {
 
             {/* 先过滤出可见的分类，然后再渲染 */}
             {categories
-              .filter(cat => (cat as any).isVisible !== false) // 只显示可见的分类
+              .filter(cat => {
+                // 如果是管理员（已登录），显示所有分类（包括仅管理员可见和全员隐藏的）
+                if (authToken) return true;
+                // 如果是普通用户，只显示全员可见的分类（isVisible !== false 且 不是仅管理员可见）
+                return cat.isVisible !== false && !cat.isAdminOnly;
+              })
               .map(cat => {
                 let catLinks = searchResults.filter(l => l.categoryId === cat.id);
                 const isLocked = cat.password && !unlockedCategoryIds.has(cat.id);

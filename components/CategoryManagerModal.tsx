@@ -242,37 +242,46 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                   {editingId !== cat.id && mergingCatId !== cat.id && (
                       <div className="flex items-center gap-1 self-start mt-2">
                         {/* ===== 是否可见下拉框（直接显示在列表里） ===== */}
-                        <div className="flex items-center gap-1 mr-3 border-r border-slate-200 dark:border-slate-700 pr-3">
-                          <button
-                            onClick={() => {
-                              const newValue = (cat as CategoryWithVisibility).isVisible === false ? true : false;
+                        <div className="flex items-center gap-2 mr-3 border-r border-slate-200 dark:border-slate-700 pr-3">
+                          <select
+                            value={
+                              (cat as CategoryWithVisibility).isVisible === false ? "hidden" :
+                              (cat as CategoryWithVisibility).isAdminOnly === true ? "admin" : "public"
+                            }
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              let isVisible = true;
+                              let isAdminOnly = false;
+                              
+                              if (value === "hidden") {
+                                isVisible = false;
+                                isAdminOnly = false;
+                              } else if (value === "admin") {
+                                isVisible = true;
+                                isAdminOnly = true;
+                              } else { // public
+                                isVisible = true;
+                                isAdminOnly = false;
+                              }
+                              
                               const updatedCategories = categories.map(c => 
-                                c.id === cat.id ? { ...c, isVisible: newValue } : c
+                                c.id === cat.id ? { ...c, isVisible, isAdminOnly } : c
                               );
                               onUpdateCategories(updatedCategories);
                             }}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                              (cat as CategoryWithVisibility).isVisible !== false 
-                                ? 'bg-blue-600' 
-                                : 'bg-gray-300 dark:bg-gray-600'
-                            }`}
-                            title={(cat as CategoryWithVisibility).isVisible !== false ? "点击隐藏" : "点击显示"}
+                            className="text-xs p-1.5 pr-8 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
+                            style={{
+                              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                              backgroundPosition: 'right 0.5rem center',
+                              backgroundRepeat: 'no-repeat',
+                              backgroundSize: '1.5em 1.5em',
+                              paddingRight: '2rem'
+                            }}
                           >
-                            <span
-                              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-300 ${
-                                (cat as CategoryWithVisibility).isVisible !== false 
-                                  ? 'translate-x-6' 
-                                  : 'translate-x-0.5'
-                              }`}
-                            />
-                          </button>
-                          <span className={`text-xs font-medium ${
-                            (cat as CategoryWithVisibility).isVisible !== false 
-                              ? 'text-blue-600 dark:text-blue-400' 
-                              : 'text-slate-500 dark:text-slate-400'
-                          }`}>
-                            {(cat as CategoryWithVisibility).isVisible !== false ? "可见" : "隐藏"}
-                          </span>
+                            <option value="public" className="dark:bg-slate-800">👥 全员可见</option>
+                            <option value="admin" className="dark:bg-slate-800">👑 仅管理员可见</option>
+                            <option value="hidden" className="dark:bg-slate-800">🚫 全员隐藏</option>
+                          </select>
                         </div>
                         {/* ===== 下拉框结束 ===== */}
                         
