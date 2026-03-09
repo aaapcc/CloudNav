@@ -4,6 +4,10 @@ import { X, ArrowUp, ArrowDown, Trash2, Edit2, Plus, Check, Lock, Merge, Smile }
 import { Category, LinkItem } from '../types';
 import Icon from './Icon';
 
+interface CategoryWithVisibility extends Category {
+  isVisible?: boolean;
+}
+
 interface CategoryManagerModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -237,6 +241,27 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                   {/* Actions */}
                   {editingId !== cat.id && mergingCatId !== cat.id && (
                       <div className="flex items-center gap-1 self-start mt-2">
+                        {/* ===== 新增：是否可见下拉框 ===== */}
+                        <div className="flex items-center gap-1 mr-2">
+                          <select
+                            value={cat.isVisible !== false ? "true" : "false"}
+                            onChange={(e) => {
+                              const newValue = e.target.value === "true";
+                              // 更新当前分类的可见性
+                              const updatedCategories = categories.map(c => 
+                                c.id === cat.id ? { ...c, isVisible: newValue } : c
+                              );
+                              onUpdateCategories(updatedCategories);
+                            }}
+                            className="text-xs p-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 w-16"
+                            title="是否在前台显示"
+                          >
+                            <option value="true">可见</option>
+                            <option value="false">隐藏</option>
+                          </select>
+                        </div>
+                        {/* ===== 新增结束 ===== */}
+                        
                         <button onClick={() => startEdit(cat)} className="p-1.5 text-slate-400 hover:text-blue-500 hover:bg-slate-200 dark:hover:bg-slate-600 rounded" title="编辑">
                             <Edit2 size={14} />
                         </button>
