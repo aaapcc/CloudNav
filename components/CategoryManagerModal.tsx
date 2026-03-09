@@ -242,22 +242,37 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                   {editingId !== cat.id && mergingCatId !== cat.id && (
                       <div className="flex items-center gap-1 self-start mt-2">
                         {/* ===== 是否可见下拉框（直接显示在列表里） ===== */}
-                        <div className="flex items-center gap-1 mr-3 border-r border-slate-200 dark:border-slate-700 pr-2">
-                          <select
-                            value={(cat as CategoryWithVisibility).isVisible !== false ? "true" : "false"}
-                            onChange={(e) => {
-                              const newValue = e.target.value === "true";
+                        <div className="flex items-center gap-1 mr-3 border-r border-slate-200 dark:border-slate-700 pr-3">
+                          <button
+                            onClick={() => {
+                              const newValue = (cat as CategoryWithVisibility).isVisible === false ? true : false;
                               const updatedCategories = categories.map(c => 
                                 c.id === cat.id ? { ...c, isVisible: newValue } : c
                               );
                               onUpdateCategories(updatedCategories);
                             }}
-                            className="text-xs p-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 w-16"
-                            title="是否在前台显示"
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                              (cat as CategoryWithVisibility).isVisible !== false 
+                                ? 'bg-blue-600' 
+                                : 'bg-gray-300 dark:bg-gray-600'
+                            }`}
+                            title={(cat as CategoryWithVisibility).isVisible !== false ? "点击隐藏" : "点击显示"}
                           >
-                            <option value="true">可见</option>
-                            <option value="false">隐藏</option>
-                          </select>
+                            <span
+                              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-300 ${
+                                (cat as CategoryWithVisibility).isVisible !== false 
+                                  ? 'translate-x-6' 
+                                  : 'translate-x-0.5'
+                              }`}
+                            />
+                          </button>
+                          <span className={`text-xs font-medium ${
+                            (cat as CategoryWithVisibility).isVisible !== false 
+                              ? 'text-blue-600 dark:text-blue-400' 
+                              : 'text-slate-500 dark:text-slate-400'
+                          }`}>
+                            {(cat as CategoryWithVisibility).isVisible !== false ? "可见" : "隐藏"}
+                          </span>
                         </div>
                         {/* ===== 下拉框结束 ===== */}
                         
