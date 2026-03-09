@@ -426,6 +426,7 @@ function App() {
 
   const handleUpdateCategories = (newCats: Category[], newLinks?: LinkItem[]) => {
       if (!authToken) { setIsAuthOpen(true); return; }
+      console.log('App收到数据:', newCats); // 看看这里的数据有没有 isVisible 字段
       updateData(newLinks || links, newCats);
   };
 

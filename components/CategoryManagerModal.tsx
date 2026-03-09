@@ -256,6 +256,7 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                                 }
                                 return c;
                               });
+                              console.log('准备保存的数据:', newCategories);
                               onUpdateCategories(newCategories);
                             }}
                             className={`px-2 py-1 text-xs rounded-l-lg border ${
