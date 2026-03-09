@@ -62,6 +62,9 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
   const [mergingCatId, setMergingCatId] = useState<string | null>(null);
   const [targetMergeId, setTargetMergeId] = useState<string>('');
 
+  // 强制刷新用
+  const [forceUpdate, setForceUpdate] = useState(0);
+
   // 👇 加在这里
   useEffect(() => {
     console.log('Modal categories 更新了:', categories);
@@ -148,7 +151,7 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
 
         <div className="flex-1 overflow-y-auto p-4 space-y-2">
           {categories.map((cat, index) => (
-            <div key={`${cat.id}-${(cat as any).isVisible}-${(cat as any).isAdminOnly}`} className="flex flex-col p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg group gap-2 border border-slate-100 dark:border-slate-600">
+            <div key={`${cat.id}-${forceUpdate}`} className="flex flex-col p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg group gap-2 border border-slate-100 dark:border-slate-600">
               <div className="flex items-center gap-2">
                   {/* Order Controls */}
                   <div className="flex flex-col gap-1 mr-2">
@@ -249,20 +252,15 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
     {/* 简化版：只有隐藏按钮 */}
     <button
       onClick={() => {
-        // 直接打印当前分类
-        console.log('当前分类:', cat.id, cat.name, '当前isVisible:', cat.isVisible);
-        
-        // 创建新数组
         const newCategories = categories.map(c => {
           if (c.id === cat.id) {
-            console.log('找到目标，准备修改');
             return { ...c, isVisible: false };
           }
           return c;
         });
         
-        console.log('新数据:', newCategories);
         onUpdateCategories(newCategories);
+        setForceUpdate(prev => prev + 1); // 强制刷新
       }}
       className="px-2 py-1 text-xs bg-red-500 text-white rounded"
     >
