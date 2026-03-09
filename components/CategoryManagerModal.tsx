@@ -249,29 +249,23 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                         {/* ===== 是否可见下拉框（直接显示在列表里） ===== */}
                       <div className="flex items-center gap-2 mr-3 border-r border-slate-200 dark:border-slate-700 pr-3">
                         <select
-                          key={`select-${cat.id}-${(cat as any).isVisible}-${(cat as any).isAdminOnly}`}
                           value={
-                            (cat as any).isVisible === false ? "hidden" :
-                            (cat as any).isAdminOnly === true ? "admin" : "public"
+                            (cat as any).isVisible === false ? "hidden" : "public"
                           }
                           onChange={(e) => {
                             const newValue = e.target.value;
                             
-                            // 直接创建新数组
                             const newCategories = categories.map(c => {
                               if (c.id === cat.id) {
-                                if (newValue === "hidden") {
-                                  return { ...c, isVisible: false, isAdminOnly: false };
-                                } else if (newValue === "admin") {
-                                  return { ...c, isVisible: true, isAdminOnly: true };
-                                } else {
-                                  return { ...c, isVisible: true, isAdminOnly: false };
-                                }
+                                return { 
+                                  ...c, 
+                                  isVisible: newValue === "public" ? true : false,
+                                  // 暂时不用 isAdminOnly，先让基础功能工作
+                                };
                               }
                               return c;
                             });
                             
-                            // 调用更新函数
                             onUpdateCategories(newCategories);
                           }}
                           className="text-xs p-1.5 pr-8 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
@@ -283,9 +277,8 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                             paddingRight: '2rem'
                           }}
                         >
-                          <option value="public" className="dark:bg-slate-800">👥 全员可见</option>
-                          <option value="admin" className="dark:bg-slate-800">👑 仅管理员可见</option>
-                          <option value="hidden" className="dark:bg-slate-800">🚫 全员隐藏</option>
+                          <option value="public" className="dark:bg-slate-800">👥 可见</option>
+                          <option value="hidden" className="dark:bg-slate-800">🚫 隐藏</option>
                         </select>
                       </div>
                         {/* ===== 下拉框结束 ===== */}
