@@ -259,28 +259,25 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                             } else if (value === "admin") {
                               isVisible = true;
                               isAdminOnly = true;
-                            } else {
+                            } else { // public
                               isVisible = true;
                               isAdminOnly = false;
                             }
                             
-                            // 创建新数组
+                            // 创建新数组，使用类型断言
                             const updatedCategories = categories.map(c => 
                               c.id === cat.id ? { 
                                 ...c, 
                                 isVisible, 
                                 isAdminOnly 
                               } : c
-                            );
+                            ) as Category[];  // 👈 关键：类型断言
                             
                             // 调用更新函数
                             onUpdateCategories(updatedCategories);
                             
-                            // 手动更新本地状态，强制重新渲染
-                            setTimeout(() => {
-                              // 触发重组件的重新渲染
-                              setEditingId(prev => prev === cat.id ? prev + ' ' : prev);
-                            }, 0);
+                            // 强制刷新下拉框
+                            e.target.value = value;
                           }}
                           className="text-xs p-1.5 pr-8 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
                           style={{
