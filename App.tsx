@@ -740,6 +740,7 @@ function App() {
             })}
         </div>
 
+        {authToken && (
         <div className="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 shrink-0">
             <div className="grid grid-cols-3 gap-2 mb-2">
                 <button 
@@ -777,6 +778,7 @@ function App() {
                </div>
             </div>
         </div>
+        )}
       </aside>
 
       <main 

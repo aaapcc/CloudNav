@@ -46,7 +46,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onLogin, onClose }) => {
           </div>
           <h2 className="text-xl font-bold dark:text-white">身份验证</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-2">
-            请输入部署时设置的 PASSWORD 以同步数据
+            请输入 PASSWORD 同步数据
           </p>
         </div>
 
