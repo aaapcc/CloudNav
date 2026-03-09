@@ -142,74 +142,28 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-2">
-          {categories.map((cat, index) => (
-            <div key={cat.id} className="flex flex-col p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg group gap-2 border border-slate-100 dark:border-slate-600">
-              
-              {/* 第一行：排序按钮 + 分类信息 + 操作按钮（编辑/合并/删除） */}
-              <div className="flex items-start gap-2">
-                {/* 排序按钮 - 保持垂直排列 */}
-                <div className="flex flex-col gap-1 mr-2 shrink-0">
-                  <button onClick={() => handleMove(index, 'up')} disabled={index === 0} className="p-0.5 text-slate-400 hover:text-blue-500 disabled:opacity-30">
-                    <ArrowUp size={14} />
-                  </button>
-                  <button onClick={() => handleMove(index, 'down')} disabled={index === categories.length - 1} className="p-0.5 text-slate-400 hover:text-blue-500 disabled:opacity-30">
-                    <ArrowDown size={14} />
-                  </button>
-                </div>
-
-                {/* 分类图标和名称 */}
-                <div className="flex-1 min-w-0">
-                  {editingId === cat.id ? (
-                    // 编辑模式保持不变...
-                    <div className="flex flex-col gap-2">...</div>
-                  ) : mergingCatId === cat.id ? (
-                    // 合并模式保持不变...
-                    <div className="flex items-center gap-2">...</div>
-                  ) : (
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600 shrink-0">
-                        {cat.icon && cat.icon.length <= 4 && !/^[a-zA-Z]+$/.test(cat.icon) 
-                          ? <span className="text-lg">{cat.icon}</span> 
-                          : <Icon name={cat.icon} size={16} />
-                        }
-                      </div>
-                      <div className="flex flex-col">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium dark:text-slate-200 truncate">{cat.name}</span>
-                          {cat.password && <Lock size={12} className="text-amber-500 shrink-0" />}
-                        </div>
-                        {/* 链接数量 - 放在这里，下拉框会显示在它下面 */}
-                        <span className="text-xs text-slate-400">{links.filter(l => l.categoryId === cat.id).length} 个链接</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* 操作按钮（编辑/合并/删除）- 保持在右上角 */}
-                {editingId !== cat.id && mergingCatId !== cat.id && (
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button onClick={() => startEdit(cat)} className="p-1.5 text-slate-400 hover:text-blue-500 hover:bg-slate-200 dark:hover:bg-slate-600 rounded" title="编辑">
-                      <Edit2 size={14} />
-                    </button>
-                    <button onClick={() => openMerge(cat.id)} className="p-1.5 text-slate-400 hover:text-purple-500 hover:bg-slate-200 dark:hover:bg-slate-600 rounded" title="合并">
-                      <Merge size={14} />
-                    </button>
-                    <button onClick={() => { if(confirm(`确定删除"${cat.name}"分类吗？`)) onDeleteCategory(cat.id); }} className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-slate-200 dark:hover:bg-slate-600 rounded" title="删除">
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                )}
-                {editingId === cat.id && (
-                  <button onClick={saveEdit} className="shrink-0 text-green-500 hover:bg-green-50 dark:hover:bg-slate-600 p-1.5 rounded bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-600">
-                    <Check size={16} />
-                  </button>
-                )}
+          {editingId !== cat.id && mergingCatId !== cat.id && (
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded bg-white dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600 shrink-0">
+                {cat.icon && cat.icon.length <= 4 && !/^[a-zA-Z]+$/.test(cat.icon) 
+                  ? <span className="text-lg">{cat.icon}</span> 
+                  : <Icon name={cat.icon} size={16} />
+                }
               </div>
-
-              {/* 第二行：是否可见下拉框 - 单独一行，显示在链接数量下面 */}
-              {editingId !== cat.id && mergingCatId !== cat.id && (
-                <div className="flex items-center gap-2 pl-10 mt-1 border-t border-slate-200 dark:border-slate-700 pt-2">
-                  <span className="text-xs text-slate-500 dark:text-slate-400">可见性:</span>
+              
+              {/* 这里是 flex flex-col 容器 */}
+              <div className="flex flex-col">
+                {/* 第一行：分类名称 + 密码锁 */}
+                <div className="flex items-center gap-2">
+                  <span className="font-medium dark:text-slate-200 truncate">{cat.name}</span>
+                  {cat.password && <Lock size={12} className="text-amber-500 shrink-0" />}
+                </div>
+                
+                {/* 第二行：链接数量 */}
+                <span className="text-xs text-slate-400">{links.filter(l => l.categoryId === cat.id).length} 个链接</span>
+                
+                {/* 第三行：下拉框 - 放在 flex flex-col 内部 */}
+                <div className="pt-2">
                   <select
                     value={
                       (cat as CategoryWithVisibility).isVisible === false ? "hidden" :
@@ -244,14 +198,14 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                       backgroundSize: '1.2em 1.2em',
                     }}
                   >
-                    <option value="public" className="dark:bg-slate-800">👥 全员可见</option>
-                    <option value="admin" className="dark:bg-slate-800">👑 仅管理员可见</option>
-                    <option value="hidden" className="dark:bg-slate-800">🚫 全员隐藏</option>
+                    <option value="public" className="dark:bg-slate-800">全员可见</option>
+                    <option value="admin" className="dark:bg-slate-800">仅管理员可见</option>
+                    <option value="hidden" className="dark:bg-slate-800">全员隐藏</option>
                   </select>
                 </div>
-              )}
+              </div>
             </div>
-          ))}
+          )}
         </div>
 
         <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
