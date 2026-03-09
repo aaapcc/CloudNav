@@ -595,7 +595,11 @@ function App() {
           </div>
       )}
 
-      <AuthModal isOpen={isAuthOpen} onLogin={handleLogin} />
+      <AuthModal 
+        isOpen={isAuthOpen} 
+        onLogin={handleLogin}
+        onClose={() => setIsAuthOpen(false)}
+      />
       
       <CategoryAuthModal 
         isOpen={!!catAuthModalData}
