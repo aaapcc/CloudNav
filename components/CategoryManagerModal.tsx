@@ -241,13 +241,12 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                   {/* Actions */}
                   {editingId !== cat.id && mergingCatId !== cat.id && (
                       <div className="flex items-center gap-1 self-start mt-2">
-                        {/* ===== 新增：是否可见下拉框 ===== */}
-                        <div className="flex items-center gap-1 mr-2">
+                        {/* ===== 是否可见下拉框（直接显示在列表里） ===== */}
+                        <div className="flex items-center gap-1 mr-3 border-r border-slate-200 dark:border-slate-700 pr-2">
                           <select
-                            value={cat.isVisible !== false ? "true" : "false"}
+                            value={(cat as CategoryWithVisibility).isVisible !== false ? "true" : "false"}
                             onChange={(e) => {
                               const newValue = e.target.value === "true";
-                              // 更新当前分类的可见性
                               const updatedCategories = categories.map(c => 
                                 c.id === cat.id ? { ...c, isVisible: newValue } : c
                               );
@@ -260,7 +259,7 @@ const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                             <option value="false">隐藏</option>
                           </select>
                         </div>
-                        {/* ===== 新增结束 ===== */}
+                        {/* ===== 下拉框结束 ===== */}
                         
                         <button onClick={() => startEdit(cat)} className="p-1.5 text-slate-400 hover:text-blue-500 hover:bg-slate-200 dark:hover:bg-slate-600 rounded" title="编辑">
                             <Edit2 size={14} />

@@ -704,7 +704,10 @@ function App() {
                </button>
             </div>
 
-            {categories.map(cat => {
+            {/* 先过滤出可见的分类 */}
+            {categories
+              .filter(cat => (cat as any).isVisible !== false) // 只显示可见的分类
+              .map(cat => {
                 const isLocked = cat.password && !unlockedCategoryIds.has(cat.id);
                 const isEmoji = cat.icon && cat.icon.length <= 4 && !/^[a-zA-Z]+$/.test(cat.icon);
                 
@@ -907,7 +910,10 @@ function App() {
                 </section>
             )}
 
-            {categories.map(cat => {
+            {/* 先过滤出可见的分类，然后再渲染 */}
+            {categories
+              .filter(cat => (cat as any).isVisible !== false) // 只显示可见的分类
+              .map(cat => {
                 let catLinks = searchResults.filter(l => l.categoryId === cat.id);
                 const isLocked = cat.password && !unlockedCategoryIds.has(cat.id);
                 
