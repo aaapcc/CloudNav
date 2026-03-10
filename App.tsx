@@ -736,7 +736,14 @@ function App() {
                     <div className={`p-1.5 rounded-lg transition-colors flex items-center justify-center ${activeCategory === cat.id ? 'bg-blue-100 dark:bg-blue-800' : 'bg-slate-100 dark:bg-slate-800'}`}>
                       {isLocked ? <Lock size={16} className="text-amber-500" /> : (isEmoji ? <span className="text-base leading-none">{cat.icon}</span> : <Icon name={cat.icon} size={16} />)}
                     </div>
-                    <span className="truncate flex-1 text-left">{cat.name}</span>
+                    <span className="truncate flex-1 text-left">
+                      {cat.name}
+                      {cat.isAdminOnly && authToken && (
+                        <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
+                          管
+                        </span>
+                      )}
+                    </span>
                     {activeCategory === cat.id && <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>}
                   </button>
                 );
@@ -937,9 +944,17 @@ function App() {
                              <div className="text-slate-400">
                                 {cat.icon && cat.icon.length <= 4 && !/^[a-zA-Z]+$/.test(cat.icon) ? <span className="text-lg">{cat.icon}</span> : <Icon name={cat.icon} size={20} />}
                              </div>
-                             <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200">
-                                 {cat.name}
-                             </h2>
+                             <div className="flex items-center gap-2">
+                                <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200">
+                                  {cat.name}
+                                </h2>
+                                {cat.isAdminOnly && authToken && (
+                                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
+                                    仅管理员
+                                  </span>
+                                )}
+                                {isLocked && <Lock size={16} className="text-amber-500" />}
+                              </div>
                              {isLocked && <Lock size={16} className="text-amber-500" />}
                         </div>
                         
