@@ -955,7 +955,6 @@ function App() {
                                 )}
                                 {isLocked && <Lock size={16} className="text-amber-500" />}
                               </div>
-                             {isLocked && <Lock size={16} className="text-amber-500" />}
                         </div>
                         
                         {isLocked ? (
