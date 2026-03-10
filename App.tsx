@@ -916,25 +916,22 @@ function App() {
 
             {/* 右侧内容过滤，先过滤出可见的分类，然后再渲染 */}
             {categories
-              .filter(cat => {
-                // 如果是管理员（已登录），显示所有分类（包括仅管理员可见和全员隐藏的）
-                if (authToken) return true;
-                // 如果是普通用户，只显示全员可见的分类（isVisible !== false 且 不是仅管理员可见）
-                return cat.isVisible !== false && !cat.isAdminOnly;
-              })
-              .map(cat => {
-                let catLinks = searchResults.filter(l => l.categoryId === cat.id);
-                const isLocked = cat.password && !unlockedCategoryIds.has(cat.id);
-                
-                // Logic Fix: If External Search, do NOT hide categories based on links
-                // Because external search doesn't filter links.
-                // However, the user probably wants to see the links grid even when typing for external search
-                // Current logic: if search query exists AND local search -> filter. 
-                // If search query exists AND external search -> show all (searchResults returns all).
-                
-                if (searchQuery && searchMode === 'local' && catLinks.length === 0) return null;
+                .filter(cat => {
+                  // 如果是管理员（已登录）
+                  if (authToken) {
+                    // 管理员也看不到"全员隐藏"的分类
+                    return cat.isVisible !== false;
+                  }
+                  // 如果是普通用户，只显示全员可见的分类
+                  return cat.isVisible !== false && !cat.isAdminOnly;
+                })
+                .map(cat => {
+                  let catLinks = searchResults.filter(l => l.categoryId === cat.id);
+                  const isLocked = cat.password && !unlockedCategoryIds.has(cat.id);
+                  
+                  if (searchQuery && searchMode === 'local' && catLinks.length === 0) return null;
 
-                return (
+                  return (
                     <section key={cat.id} id={`cat-${cat.id}`} className="scroll-mt-24">
                         <div className="flex items-center gap-2 mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
                              <div className="text-slate-400">
