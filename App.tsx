@@ -299,11 +299,6 @@ function App() {
     return () => mainEl?.removeEventListener('scroll', handleScroll);
   }, [categories]);
 
-  // 👇 把这个加在这里，和其他 useEffect 平级
-  useEffect(() => {
-    console.log('App categories 更新了:', categories);
-  }, [categories]);
-
   const toggleTheme = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
@@ -426,7 +421,6 @@ function App() {
 
   const handleUpdateCategories = (newCats: Category[], newLinks?: LinkItem[]) => {
       if (!authToken) { setIsAuthOpen(true); return; }
-      console.log('App收到数据:', newCats); // 看看这里的数据有没有 isVisible 字段
       updateData(newLinks || links, newCats);
   };
 
@@ -714,12 +708,15 @@ function App() {
                </button>
             </div>
 
-            {/* 先过滤出可见的分类 */}
+            // 左侧菜单过滤
             {categories
               .filter(cat => {
-                // 如果是管理员（已登录），显示所有分类
-                if (authToken) return true;
-                // 如果是普通用户，只显示全员可见的分类
+                // 如果是管理员（已登录），能看到"全员可见"和"仅管理员可见"的分类
+                if (authToken) {
+                  // 管理员也看不到"全员隐藏"的分类
+                  return cat.isVisible !== false;
+                }
+                // 如果是普通用户，只显示"全员可见"的分类
                 return cat.isVisible !== false && !cat.isAdminOnly;
               })
               .map(cat => {
@@ -917,7 +914,7 @@ function App() {
                 </section>
             )}
 
-            {/* 先过滤出可见的分类，然后再渲染 */}
+            {/* 右侧内容过滤，先过滤出可见的分类，然后再渲染 */}
             {categories
               .filter(cat => {
                 // 如果是管理员（已登录），显示所有分类（包括仅管理员可见和全员隐藏的）
